@@ -1,0 +1,9 @@
+CREATE ROLE bb SUPERUSER LOGIN PASSWORD 'yourmostsecurepassword';
+
+CREATE DATABASE bank_data;
+
+migrate create -ext sql -dir db/migration -seq init_schema
+
+sudo -i -u postgres;
+
+psql -U bb -W bank_data
