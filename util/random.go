@@ -4,6 +4,8 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/helper"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -35,7 +37,8 @@ func RandomOwner() string {
 
 func RandomPassword() string {
 	digit := RandomInt(6, 10)
-	return RandomString(int(digit))
+	res := RandomString(int(digit))
+	return helper.HashAndSalt([]byte(res))
 }
 
 func RandomEmail() string{

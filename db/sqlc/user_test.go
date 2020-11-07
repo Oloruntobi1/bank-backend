@@ -35,3 +35,18 @@ func createRandomUser(t *testing.T) User {
 func TestCreateUser(t *testing.T) {
 	createRandomUser(t)
 }
+
+func TestGetUser(t *testing.T) {
+	user := createRandomUser(t)
+
+	gottenUser, err := testQueries.GetUser(context.Background(), user.ID)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, gottenUser)
+
+	require.Equal(t, user.Name, gottenUser.Name)
+	require.Equal(t, user.Email, gottenUser.Email)
+	require.Equal(t, user.Password, gottenUser.Password)
+	
+
+}
