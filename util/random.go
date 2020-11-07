@@ -37,16 +37,33 @@ func RandomPassword() string {
 	digit := RandomInt(6, 10)
 	return RandomString(int(digit))
 }
+
+func RandomEmail() string{
+	return RandomOwner() + "@gmail.com"
+}
+
 func RandomMoney() int64 {
 	return RandomInt(0, 1000)
+}
+
+func RandomType(types []string) string{
+
+	n := len(types)
+
+	return types[rand.Intn(n)]
+
 }
 
 func RandomBankType() string{
 
 	accType := []string{"Current", "Savings", "Fixed"}
 
-	n := len(accType)
+	return RandomType(accType)
 
-	return accType[rand.Intn(n)]
+}
 
+func RandomCurrencyType() string {
+	currencyType := []string{"Yen", "EUR", "Pounds"}
+
+	return RandomType(currencyType)
 }
