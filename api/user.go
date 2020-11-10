@@ -5,6 +5,7 @@ import (
 	db "github.com/Oloruntobi1/Oloruntobi1/bank_backend/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/helper"
+	"database/sql"
 )
 
 type createUserRequest struct {
@@ -35,4 +36,35 @@ func(server *Server) createUser(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, user)
+}
+
+type deleteUserRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
+func(server *Server) deleteUser(ctx *gin.Context) {
+
+	var req deleteUserRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	gottenAccount, err := server.store.GetAccount(ctx, req.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	err = server.store.DeleteUser(ctx, gottenAccount.ID )
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, "Successfully deleted")
+
+
 }
