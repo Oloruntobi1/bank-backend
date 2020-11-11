@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/mcuadros/go-gin-prometheus"
 
-	db "github.com/Oloruntobi1/bankBackend/db"
+	db "github.com/Oloruntobi1/bankBackend/db/sqlc"
 	"github.com/gin-gonic/gin"
 )
 

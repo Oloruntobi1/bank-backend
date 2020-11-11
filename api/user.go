@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-	db "github.com/Oloruntobi1/bankBackend/db"
+	db "github.com/Oloruntobi1/bankBackend/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"github.com/Oloruntobi1/bankBackend/helper"
 	"database/sql"
@@ -50,12 +50,12 @@ func(server *Server) deleteUser(ctx *gin.Context) {
 		return
 	}
 
-	gottenAccount, err := server.store.GetAccount(ctx, req.ID)
+	gottenUser, err := server.store.GetUser(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	err = server.store.DeleteUser(ctx, gottenAccount.ID )
+	err = server.store.DeleteUser(ctx, gottenUser.ID )
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))

@@ -3,8 +3,9 @@ package api
 import (
 	"net/http"
 
-	db "github.com/Oloruntobi1/bankBackend/db"
+	db "github.com/Oloruntobi1/bankBackend/db/sqlc"
 	"github.com/Oloruntobi1/bankBackend/helper"
+	"github.com/Oloruntobi1/bankBackend/token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -45,7 +46,7 @@ func(server *Server) register(ctx *gin.Context) {
 	}
 
 	res.Client = client
-	res.Token = helper.PrepareToken(client)
+	res.Token = token.PrepareToken(client)
 	
 	ctx.JSON(http.StatusOK, res)
 
