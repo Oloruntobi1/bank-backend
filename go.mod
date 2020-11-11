@@ -1,4 +1,4 @@
-module github.com/Oloruntobi1/Oloruntobi1/bank_backend
+module github.com/Oloruntobi1/bankBackend
 
 go 1.15
 
@@ -8,7 +8,6 @@ require (
 	github.com/lib/pq v1.8.0
 	github.com/mcuadros/go-gin-prometheus v0.1.0
 	github.com/prometheus/client_golang v1.8.0
-	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
 )

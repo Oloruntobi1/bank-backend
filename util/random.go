@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/helper"
+	"github.com/Oloruntobi1/bankBackend/helper"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"

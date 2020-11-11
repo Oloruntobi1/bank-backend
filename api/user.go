@@ -2,9 +2,9 @@ package api
 
 import (
 	"net/http"
-	db "github.com/Oloruntobi1/Oloruntobi1/bank_backend/db/sqlc"
+	db "github.com/Oloruntobi1/bankBackend/db"
 	"github.com/gin-gonic/gin"
-	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/helper"
+	"github.com/Oloruntobi1/bankBackend/helper"
 	"database/sql"
 )
 

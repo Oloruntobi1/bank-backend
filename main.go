@@ -9,8 +9,8 @@ import (
 	_"github.com/prometheus/client_golang/prometheus"
 	_"github.com/prometheus/client_golang/prometheus/promhttp"
 	_"github.com/lib/pq"
-	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/api"
-	db "github.com/Oloruntobi1/Oloruntobi1/bank_backend/db/sqlc"
+	"github.com/Oloruntobi1/bankBackend/api"
+	db "github.com/Oloruntobi1/bankBackend/db"
 )
 
 const serverAddress = "0.0.0.0:2000"

@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/mcuadros/go-gin-prometheus"
 
-	db "github.com/Oloruntobi1/Oloruntobi1/bank_backend/db/sqlc"
+	db "github.com/Oloruntobi1/bankBackend/db"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +28,7 @@ func NewServer(store *db.Store) *Server {
 	r.POST("/users", server.createUser)
 	r.DELETE("/user/:id", server.deleteUser)
 	r.POST("/register", server.register)
+	// r.POST("/login", server.login)
 	
 
 	server.router = r

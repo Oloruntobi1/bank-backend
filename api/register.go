@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	db "github.com/Oloruntobi1/Oloruntobi1/bank_backend/db/sqlc"
-	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/helper"
+	db "github.com/Oloruntobi1/bankBackend/db"
+	"github.com/Oloruntobi1/bankBackend/helper"
 	"github.com/gin-gonic/gin"
 )
 

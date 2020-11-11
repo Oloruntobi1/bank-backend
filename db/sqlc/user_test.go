@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"testing"
 
-	"github.com/Oloruntobi1/Oloruntobi1/bank_backend/util"
+	"github.com/Oloruntobi1/bankBackend/util"
 	"github.com/stretchr/testify/require"
 )
 

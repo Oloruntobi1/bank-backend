@@ -3,7 +3,7 @@ package helper
 import (
 	"time"
 
-	db "github.com/Oloruntobi1/Oloruntobi1/bank_backend/db/sqlc"
+	db "github.com/Oloruntobi1/bankBackend/db"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
