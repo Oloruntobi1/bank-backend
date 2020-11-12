@@ -4,6 +4,7 @@ import (
 	"github.com/mcuadros/go-gin-prometheus"
 
 	db "github.com/Oloruntobi1/bankBackend/db/sqlc"
+	"github.com/Oloruntobi1/bankBackend/token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,12 +26,11 @@ func NewServer(store *db.Store) *Server {
 	// r.Run(":29090")
 
 	
-	r.POST("/users", server.createUser)
-	r.DELETE("/user/:id", server.deleteUser)
+	r.POST("/users", token.TokenAuthMiddleware(), server.createUser)
+	r.DELETE("/user/:id", token.TokenAuthMiddleware(), server.deleteUser)
 	r.POST("/register", server.register)
-	// r.POST("/login", server.login)
+	r.POST("/login", token.TokenAuthMiddleware(), server.login)
 	
-
 	server.router = r
 	return server
 }

@@ -18,8 +18,7 @@ type createRegistrationRequest struct {
 }
 
 type createRegistrationResponse struct {
-	Client db.Client
-	Token string
+	Token *token.TokenDetails
 }
 
 func(server *Server) register(ctx *gin.Context) {
@@ -45,9 +44,17 @@ func(server *Server) register(ctx *gin.Context) {
 		return
 	}
 
-	res.Client = client
 	res.Token = token.PrepareToken(client)
+
+	saveErr := token.CreateAuth(client, res.Token)
+	if saveErr != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, saveErr.Error())
+	}
+	tokens := map[string]string{
+		"access_token":  res.Token.AccessToken,
+		"refresh_token": res.Token.RefreshToken,
+	}
 	
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusOK, tokens)
 
 }

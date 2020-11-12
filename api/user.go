@@ -22,6 +22,17 @@ func(server *Server) createUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
+	// metadata, err := ExtractTokenMetadata(ctx.Request)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusUnauthorized, "unauthorized")
+	// 	return
+	// }
+	// userid, err := FetchAuth(metadata)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusUnauthorized, err.Error())
+	// 	return
+	// }
 	
 	password := helper.HashAndSalt([]byte(req.Password))
 	arg := db.CreateUserParams {

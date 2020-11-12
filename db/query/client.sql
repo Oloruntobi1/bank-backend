@@ -8,7 +8,7 @@ RETURNING *;
 
 -- name: GetClient :one
 SELECT * FROM clients
-WHERE id = $1 LIMIT 1;
+WHERE email = $1 LIMIT 1;
 
 -- name: ListClients :many
 SELECT * FROM clients

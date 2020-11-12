@@ -46,11 +46,11 @@ func (q *Queries) DeleteClient(ctx context.Context, id int64) error {
 
 const getClient = `-- name: GetClient :one
 SELECT id, name, email, password, created_at FROM clients
-WHERE id = $1 LIMIT 1
+WHERE email = $1 LIMIT 1
 `
 
-func (q *Queries) GetClient(ctx context.Context, id int64) (Client, error) {
-	row := q.db.QueryRowContext(ctx, getClient, id)
+func (q *Queries) GetClient(ctx context.Context, email string) (Client, error) {
+	row := q.db.QueryRowContext(ctx, getClient, email)
 	var i Client
 	err := row.Scan(
 		&i.ID,
