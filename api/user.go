@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/Oloruntobi1/bankBackend/helper"
 	"database/sql"
+	"github.com/Oloruntobi1/bankBackend/token"
 )
 
 type createUserRequest struct {
@@ -23,16 +24,16 @@ func(server *Server) createUser(ctx *gin.Context) {
 		return
 	}
 
-	// metadata, err := ExtractTokenMetadata(ctx.Request)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusUnauthorized, "unauthorized")
-	// 	return
-	// }
-	// userid, err := FetchAuth(metadata)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusUnauthorized, err.Error())
-	// 	return
-	// }
+	metadata, err := token.ExtractTokenMetadata(ctx.Request)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
+	_, err = token.FetchAuth(metadata)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
 	
 	password := helper.HashAndSalt([]byte(req.Password))
 	arg := db.CreateUserParams {

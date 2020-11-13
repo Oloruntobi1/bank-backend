@@ -1,21 +1,26 @@
 package token
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
 	db "github.com/Oloruntobi1/bankBackend/db/sqlc"
 	"github.com/Oloruntobi1/bankBackend/helper"
+	"github.com/Oloruntobi1/bankBackend/rdstore"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/twinj/uuid"
-	"github.com/Oloruntobi1/bankBackend/rdstore"
 )
 
+type AccessDetails struct {
+	AccessUuid string
+	ClientID string
+
+}
 
 type TokenDetails struct {
 	AccessToken  string
@@ -35,10 +40,10 @@ func PrepareToken(client db.Client) *TokenDetails {
 	td.AccessUuid = uuid.NewV4().String()
 
 	td.RtExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
-	td.RefreshUuid = td.AccessUuid + "++" + strconv.Itoa(int(client.ID))
+	td.RefreshUuid = td.AccessUuid + "++" + client.Email
 	
 	atContent := jwt.MapClaims{
-		"user_id": client.ID,
+		"user_id": client.Email,
 		"expiry": td.AtExpires,
 		"access_uuid": td.AccessUuid,
 		"authorized": true,
@@ -50,9 +55,9 @@ func PrepareToken(client db.Client) *TokenDetails {
 
 		
 	rtContent := jwt.MapClaims{
-		"user_id": client.ID,
+		"user_id": client.Email,
 		"expiry": td.RtExpires,
-		"access_uuid": td.RefreshUuid,
+		"refresh_uuid": td.RefreshUuid,
 		"authorized": true,
 
 	}
@@ -69,11 +74,11 @@ func CreateAuth(client db.Client, td *TokenDetails) error {
 	rt := time.Unix(td.RtExpires, 0)
 	now := time.Now()
 
-	errAccess := rdstore.Client.Set(td.AccessUuid, strconv.Itoa(int(client.ID)), at.Sub(now)).Err()
+	errAccess := rdstore.Client.Set(td.AccessUuid, client.Email, at.Sub(now)).Err()
 	if errAccess != nil {
 		return errAccess
 	}
-	errRefresh := rdstore.Client.Set(td.RefreshUuid, strconv.Itoa(int(client.ID)), rt.Sub(now)).Err()
+	errRefresh := rdstore.Client.Set(td.RefreshUuid,  client.Email, rt.Sub(now)).Err()
 	if errRefresh != nil {
 		return errRefresh
 	}
@@ -124,4 +129,72 @@ func ExtractToken(r *http.Request) string {
 		return strArr[1]
 	}
 	return ""
+}
+
+func ExtractTokenMetadata(r *http.Request) (*AccessDetails, error) {
+	token, err := VerifyToken(r)
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		accessUuid, ok := claims["access_uuid"].(string)
+		if !ok {
+			return nil, err
+		}
+		// userID, err := strconv.ParseInt(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+
+		userID := fmt.Sprintf("%v", claims["user_id"])
+		if err != nil {
+			return nil, err
+		}
+		return &AccessDetails{
+			AccessUuid: accessUuid,
+			ClientID:   userID,
+		}, nil
+	}
+	return nil, err
+}
+
+
+func FetchAuth(authD *AccessDetails) (string, error) {
+	userid, err := rdstore.Client.Get(authD.AccessUuid).Result()
+	if err != nil {
+		return "", err
+	}
+
+	userID := fmt.Sprintf("%v", userid)
+	// userID, _ := strconv.ParseInt(userid, 10, 64)
+	if authD.ClientID != userID {
+		return "", errors.New("unauthorized")
+	}
+	return userID, nil
+}
+
+func  DeleteTokens(authD *AccessDetails) error {
+	//get the refresh uuid
+	refreshUuid := fmt.Sprintf("%s++%s", authD.AccessUuid, authD.ClientID)
+	//delete access token
+	deletedAt, err := rdstore.Client.Del(authD.AccessUuid).Result()
+	if err != nil {
+		return err
+	}
+	//delete refresh token
+	deletedRt, err := rdstore.Client.Del(refreshUuid).Result()
+	if err != nil {
+		return err
+	}
+	//When the record is deleted, the return value is 1
+	if deletedAt != 1 || deletedRt != 1 {
+		return errors.New("something went wrong")
+	}
+	return nil
+}
+
+func DeleteAuth(givenUuid string) (int64,error) {
+	deleted, err := rdstore.Client.Del(givenUuid).Result()
+	if err != nil {
+		return 0, err
+	}
+	return deleted, nil
 }

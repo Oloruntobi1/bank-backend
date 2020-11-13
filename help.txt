@@ -7,3 +7,7 @@ migrate create -ext sql -dir db/migration -seq init_schema
 sudo -i -u postgres;
 
 psql -U bb -W bank_data
+
+fuser -n tcp 3000
+
+kill -9 [#taskid]

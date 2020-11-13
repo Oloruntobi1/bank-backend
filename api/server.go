@@ -30,6 +30,8 @@ func NewServer(store *db.Store) *Server {
 	r.DELETE("/user/:id", token.TokenAuthMiddleware(), server.deleteUser)
 	r.POST("/register", server.register)
 	r.POST("/login", token.TokenAuthMiddleware(), server.login)
+	r.POST("/logout", token.TokenAuthMiddleware(), server.logout)
+	r.POST("/refresh", token.TokenAuthMiddleware(), server.refresh)
 	
 	server.router = r
 	return server
